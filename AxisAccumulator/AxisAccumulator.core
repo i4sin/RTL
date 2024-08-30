@@ -1,0 +1,53 @@
+CAPI=2: 2
+
+name: Naad:Example:AxisAccumulator
+description: Axis accumulator
+
+filesets:
+  rtl_files:
+    files:
+      - src/AxisAccumulator.sv
+      - src/Adder.sv
+      - src/AxisIf.sv
+    file_type: systemVerilogSource
+
+  tb_files:
+    logical_name: tb_lib
+    files:
+      # - test/AxisAccumulator_tb.sv
+      - test/Vunit_tb.sv
+      - test/TestbenchClasses.sv
+      - test/AxisWord.sv: {is_include_file: true}
+      - test/MasterAgent.sv: {is_include_file: true}
+      - test/MasterDriver.sv: {is_include_file: true}
+      - test/MasterMonitor.sv: {is_include_file: true}
+      - test/PacketSequence.sv: {is_include_file: true}
+      - test/RandomPacket.sv: {is_include_file: true}
+      - test/Scoreboard.sv: {is_include_file: true}
+      - test/SlaveAgent.sv: {is_include_file: true}
+      - test/SlaveDriver.sv: {is_include_file: true}
+      - test/SlaveMonitor.sv: {is_include_file: true}
+      - test/Environment.sv: {is_include_file: true}
+      - test/random_test.sv: {is_include_file: true}
+
+    file_type: systemVerilogSource
+    depend:
+      - Naad:TestUtils:Vunit
+
+targets:
+  default: &default
+    filesets:
+      - rtl_files
+
+  synthesis:
+    <<: *default
+
+  test:
+    <<: *default
+    default_tool: vunit
+    tools:
+      vunit:
+        vunit_runner: vunit.py
+    filesets_append:
+      - tb_files
+    toplevel: DontCare

@@ -1,0 +1,16 @@
+CAPI=2: 2
+
+name: Yasin:TestInterfaces:ResetIf
+description: Reset Interface
+
+filesets:
+  rtl_files:
+    logical_name: tb_lib
+    files:
+      - src/ResetIf.sv
+    file_type: systemVerilogSource
+
+targets:
+  default: &default
+    filesets:
+      - rtl_files

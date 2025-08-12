@@ -1,0 +1,37 @@
+CAPI=2: 2
+
+name: Yasin:Example:ModuloCounter
+description: Simple ModuloCounter
+
+filesets:
+  rtl_files:
+    files:
+      - src/ModuloCounter.sv
+    file_type: systemVerilogSource
+
+  tb_files:
+    logical_name: tb_lib
+    files:
+      - test/ModuloCounter_tb.sv
+
+    file_type: systemVerilogSource
+    depend:
+      - Yasin:TestUtils:Vunit
+
+targets:
+  default: &default
+    filesets:
+      - rtl_files
+
+  synthesis:
+    <<: *default
+
+  test:
+    <<: *default
+    default_tool: vunit
+    tools:
+      vunit:
+        vunit_runner: vunit.py
+    filesets_append:
+      - tb_files
+    toplevel: DontCare

@@ -10,7 +10,7 @@ main() {
         -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix \
         -p 10022:22 \
         --detach \
-        -v /home/yasin/projects/RTL/:/projects/RTL \
+        -v /home/yasin/Projects/RTL/:/Projects/RTL \
         questasim-10.7c-automation:0.1.0)
 
     docker exec $CONTAINER_ID /bin/bash -c "echo export DISPLAY=$DISPLAY >> /root/.profile"

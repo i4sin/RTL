@@ -1,0 +1,39 @@
+CAPI=2: 2
+
+name: Yasin:Example:PatternDetector
+description: PatternDetector
+
+filesets:
+  rtl_files:
+    files:
+      - src/PatternDetector.sv
+    file_type: systemVerilogSource
+    depend:
+      - Yasin:TestInterfaces:DataIf
+
+  tb_files:
+    logical_name: tb_lib
+    files:
+      - test/PatternDetector_tb.sv
+    file_type: systemVerilogSource
+    depend:
+      - Yasin:Data:DataVip
+      - Yasin:TestUtils:Vunit
+
+targets:
+  default: &default
+    filesets:
+      - rtl_files
+
+  synthesis:
+    <<: *default
+
+  test:
+    <<: *default
+    default_tool: vunit
+    tools:
+      vunit:
+        vunit_runner: vunit.py
+    filesets_append:
+      - tb_files
+    toplevel: DontCare

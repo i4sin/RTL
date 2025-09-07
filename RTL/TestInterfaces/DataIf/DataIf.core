@@ -1,0 +1,15 @@
+CAPI=2: 2
+
+name: Yasin:TestInterfaces:DataIf
+description: Data Interface
+
+filesets:
+  rtl_files:
+    files:
+      - src/DataIf.sv
+    file_type: systemVerilogSource
+
+targets:
+  default: &default
+    filesets:
+      - rtl_files

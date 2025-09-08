@@ -4,33 +4,31 @@ class DataSlaveDriver #(
     typedef virtual DataIf #(DATA_WIDTH) DataVif;
 
     local DataVif vif;
-    local const int unsigned MAX_DELAY = 10;
 
     function new(DataVif vif);
         this.vif = vif;
     endfunction
 
-    local task delay();
+    local task delay_item(int unsigned delay);
         vif.ready <= 0;
-        repeat ($urandom_range(0, MAX_DELAY)) @(posedge vif.clk);
+        repeat (delay) @(posedge vif.clk);
     endtask
 
     local task drive_bus();
         vif.ready <= 1;
+        @(posedge vif.clk);
     endtask
     
     local task wait_for_handshake();
-        do begin
-            @(posedge vif.clk);
-        end while (!vif.transfer());
+        while (!vif.transfer()) @(posedge vif.clk);
     endtask
 
     local function void deassert_ready();
-        vif.valid <= 0;
+        vif.ready <= 0;
     endfunction
 
-    task drive();
-        delay();
+    task drive(DataSlaveItem item);
+        delay_item(item.delay);
         drive_bus();
         wait_for_handshake();
         deassert_ready();

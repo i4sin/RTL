@@ -1,5 +1,6 @@
 package DATA_VIP;
     `include "DataMasterItem.svh"
+    `include "DataSlaveItem.svh"
     `include "DataTransaction.svh"
     
     `include "DataMonitor.svh"

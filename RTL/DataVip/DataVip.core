@@ -12,6 +12,7 @@ filesets:
       - src/DataMasterItem.svh: {is_include_file: true}
       - src/DataMonitor.svh: {is_include_file: true}
       - src/DataSlaveDriver.svh: {is_include_file: true}
+      - src/DataSlaveItem.svh: {is_include_file: true}
       - src/DataTransaction.svh: {is_include_file: true}
     file_type: systemVerilogSource
     depend:

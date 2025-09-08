@@ -18,6 +18,7 @@ module PatternDetector_tb();
     typedef DATA_VIP::DataMasterDriver #(DATA_WIDTH) DataMasterDriver;
     typedef DATA_VIP::DataMonitor #(DATA_WIDTH) DataMonitor;
     typedef DATA_VIP::DataSlaveDriver #(DATA_WIDTH) DataSlaveDriver;
+    typedef DATA_VIP::DataSlaveItem DataSlaveItem;
     typedef DATA_VIP::DataTransaction #(DATA_WIDTH) DataTransaction;
 
     bit clk;
@@ -112,6 +113,15 @@ module PatternDetector_tb();
         return to;
     endfunction
 
+    task automatic drive_slave();
+        DataSlaveDriver slave_driver = new(m_data);
+        forever begin
+            DataSlaveItem item = new();
+            assert(item.randomize());
+            slave_driver.drive(item);
+        end
+    endtask
+
     function automatic LogicQueue get_expected_queue(LogicQueue pattern);
         logic [PATTERN_WIDTH-1:0] buff = 0;
         LogicQueue expected_queue;
@@ -134,9 +144,8 @@ module PatternDetector_tb();
             automatic LogicQueue pattern = create_pattern();
             automatic DataMasterDriver master_driver = new(s_data);
             automatic DataMonitor monitor = new(m_data);
-            automatic DataSlaveDriver slave_driver = new(m_data);
             fork
-                forever slave_driver.drive();
+                forever drive_slave();
                 begin
                     automatic LogicQueue expected_queue = get_expected_queue(pattern);
                     while (expected_queue.size()) begin

@@ -122,6 +122,16 @@ module PatternDetector_tb();
         end
     endtask
 
+    task automatic monitor_and_check(LogicQueue pattern);
+        LogicQueue expected_queue = get_expected_queue(pattern);
+        DataMonitor monitor = new(m_data);
+        while (expected_queue.size()) begin
+            DataTransaction out;
+            monitor.get_transaction(out);
+            check(out.data, expected_queue.pop_front());
+        end
+    endtask
+
     function automatic LogicQueue get_expected_queue(LogicQueue pattern);
         logic [PATTERN_WIDTH-1:0] buff = 0;
         LogicQueue expected_queue;
@@ -143,17 +153,9 @@ module PatternDetector_tb();
         `TEST_CASE("test") begin
             automatic LogicQueue pattern = create_pattern();
             automatic DataMasterDriver master_driver = new(s_data);
-            automatic DataMonitor monitor = new(m_data);
             fork
                 forever drive_slave();
-                begin
-                    automatic LogicQueue expected_queue = get_expected_queue(pattern);
-                    while (expected_queue.size()) begin
-                        DataTransaction out;
-                        monitor.get_transaction(out);
-                        check(out.data, expected_queue.pop_front());
-                    end
-                end
+                monitor_and_check(pattern);
             join_none
             while (pattern.size()) begin
                 automatic logic current_data = pattern.pop_front();

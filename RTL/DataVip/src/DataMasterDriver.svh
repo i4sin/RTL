@@ -5,26 +5,24 @@ class DataMasterDriver #(
     typedef DataMasterItem #(DATA_WIDTH) DataMasterItem;
 
     local DataVif vif;
-    local const int unsigned MAX_DELAY = 10;
 
     function new(DataVif vif);
         this.vif = vif;
     endfunction
 
-    local task delay_item();
+    local task delay_item(int unsigned delay);
         vif.valid <= 0;
-        repeat ($urandom_range(0, MAX_DELAY)) @(posedge vif.clk);
+        repeat (delay) @(posedge vif.clk);
     endtask
 
     local task drive_bus(DataMasterItem item);
         vif.valid <= 1;
         vif.data <= item.data;
+        @(posedge vif.clk);
     endtask
-    
+
     local task wait_for_handshake();
-        do begin
-            @(posedge vif.clk);
-        end while (!vif.transfer());
+        while (!vif.transfer()) @(posedge vif.clk);
     endtask
 
     local function void deassert_valid();
@@ -32,7 +30,7 @@ class DataMasterDriver #(
     endfunction
 
     task drive(DataMasterItem item);
-        delay_item();
+        delay_item(item.delay);
         drive_bus(item);
         wait_for_handshake();
         deassert_valid();
